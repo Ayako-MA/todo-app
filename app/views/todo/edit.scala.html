@@ -1,0 +1,28 @@
+@import model.ToDo
+@import controllers.todo.TodoFormData
+@*id and form*@
+@(id: Long, form: Form[TodoFormData])(implicit messagesProvider: MessagesProvider, requestHeader: RequestHeader)
+import play.api.mvc._
+import play.api.mvc.Results._
+import play.filters.csrf._
+import play.filters.csrf.CSRF.Token
+
+@* CSRFトークンの生成ヘルパーで、requestHeade暗黙パラメートして渡しています。 *@
+
+@common.Default(model.ViewValueHome(
+    title = "Todo更新画面",
+    cssSrc = Seq("main.css"),
+    jsSrc = Seq("main.js")
+)){
+    <h1>更新画面です</h1>
+    @helper.form(action = controllers.todo.routes.TodoController.update(id)) {
+        @helper.CSRF.formField
+        @helper.inputText(form("title"))
+        @helper.CSRF.formField
+        @helper.inputText(form("content"))
+        @helper.CSRF.formField
+        @helper.inputText(form("category"))
+        <input type="submit" value="更新">
+    }
+}
+

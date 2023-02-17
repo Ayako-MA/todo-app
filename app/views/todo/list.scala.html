@@ -1,0 +1,39 @@
+@import model.ToDo
+@(todoSeq:Seq[ToDo],sampleCategory: Map[String,String])(implicit messagesProvider: MessagesProvider, requestHeader: RequestHeader)
+@*viewの引き数NOArgumentエラーが起きたので追加したが(implicit assetsFinder: AssetsFinder)*@
+
+
+
+
+@common.Default(model.ViewValueHome(
+title = "Todo一覧",
+cssSrc = Seq("main.css"),
+jsSrc = Seq("main.js")
+)){
+<ul>
+    @*追加ボタン*@
+        <a href="@controllers.todo.routes.TodoController.register">
+            <button type="button">追加</button>
+        </a>
+
+
+    @for(todos <- todoSeq){
+    <div style= s"background:#C0C0C0">
+    <li>@todos.Title, @todos.Content @todos.Status, @todos.Category</li>
+    @*削除フォーム*@
+    @helper.form(action = controllers.todo.routes.TodoController.delete()) {
+        @helper.CSRF.formField
+        <input type="hidden" value="@todos.Id" name="id">
+        @* 編集ページ *@
+        <a href="@controllers.todo.routes.TodoController.edit(todos.Id.getOrElse(0))">
+            <button type="button">編集</button>
+        </a>
+        <a><input type="submit" value="削除"></a>
+        }
+    </div>
+
+
+    }
+
+</ul>
+}
