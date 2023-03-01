@@ -18,14 +18,19 @@ import play.filters.csrf.CSRF.Token
         @helper.CSRF.formField
         @helper.inputText(form("title"))
         @helper.CSRF.formField
-        @helper.inputText(form("content"))
+        @helper.textarea(form("content"),
+        'rows -> 8, 'cols -> 40,
+        '_label -> "content" ,'_showConstraints -> false
+        )
+<a>status: TODO</a>
+
 
         @helper.CSRF.formField
         @helper.inputRadioGroup(
             form("category"),
             options = helper.options(("研究", "研究"),("勉強", "勉強"), ("生活","生活"),("その他","その他"))
         )
-        <a>status:　TODO </a>
+
 
         <input type="submit" value="登録">
     }

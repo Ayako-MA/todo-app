@@ -19,7 +19,8 @@ jsSrc = Seq("main.js")
 
     @for(todos <- todoSeq){
     <div style= s"background:#C0C0C0">
-    <li>@todos.Title, @todos.Content @todos.Status, @todos.Category</li>
+    <li>@todos.Title, @todos.Content, @todos.Status, @todos.Category</li>
+
     @*削除フォーム*@
     @helper.form(action = controllers.todo.routes.TodoController.delete()) {
         @helper.CSRF.formField

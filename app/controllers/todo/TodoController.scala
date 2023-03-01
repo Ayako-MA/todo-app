@@ -18,7 +18,7 @@ import model.ToDo
  *   BaseControllerにはprotected の controllerComponentsが存在するため、そこに代入される。
  */
 
-case class TodoFormData(title:String, content: String, category: String )
+case class TodoFormData(title:String, content: String, status: String, category: String )
 @Singleton
 class TodoController @Inject()(val controllerComponents: ControllerComponents) extends BaseController with I18nSupport {
   val header = ViewValueHome(
@@ -40,14 +40,12 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents) e
   val todos = scala.collection.mutable.ArrayBuffer(sampleTodo)
 
   val form = Form(
-    // html formのnameがcontentのものを140文字以下の必須文字列に設定する
     mapping(
-      "title"   -> nonEmptyText(maxLength = 140),
+      "title"   -> nonEmptyText(maxLength = 40),
       "content" -> nonEmptyText(maxLength = 140),
-      "category"-> nonEmptyText(maxLength = 140),
-
+      "status"  -> default(text, "TODO"),
+      "category"-> text
     )(TodoFormData.apply)(TodoFormData.unapply),
-
   )
 
   def list() = Action { implicit request: Request[AnyContent] =>
@@ -73,11 +71,9 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents) e
       // 処理が成功した場合に呼び出される関数
       (todoFormData: TodoFormData) => {
         // 登録処理としてSeqに画面から受け取ったコンテンツを持つTweetを追加
-        todos += ToDo(Some(todos.size + 1L), todoFormData.title, todoFormData.content, Status = "Todo", todoFormData.category)
+        todos += ToDo(Some(todos.size + 1L), todoFormData.title, todoFormData.content, Status = "TODO", todoFormData.category)
         // 登録が完了したら一覧画面へリダイレクトする
         Redirect("/todo/list")
-        // 以下のような書き方も可能です。基本的にはtwirl側と同じです
-        // 自分自身がcontrollers.tweetパッケージに属しているのでcontrollers.tweetの部分が省略されています。
         // Redirect(routes.TweetController.list())
       }
     )
@@ -90,7 +86,7 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents) e
       case Some(todo) =>
         Ok(views.html.todo.edit(
           id, // データを識別するためのidを渡す
-          form.fill(TodoFormData(todo.Title, todo.Content, todo.Category)) // fillでformに値を詰める
+          form.fill(TodoFormData(todo.Title, todo.Content, todo.Status, todo.Category )) // fillでformに値を詰める
         ))
       case None =>
         NotFound(views.html.error.page404())
@@ -107,7 +103,7 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents) e
         todos.find(_.Id.exists(_ == id)) match {
           case Some(todo) =>
             // indexは0からのため-1
-            todos.update(id.toInt - 1, ToDo(Some(id), data.title, data.content,Status ="進行中", data.category))
+            todos.update(id.toInt - 1, ToDo(Some(id), data.title, data.content, data.status, data.category))
             Redirect(routes.TodoController.list())
           case None =>
             NotFound(views.html.error.page404())

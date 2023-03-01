@@ -19,9 +19,23 @@ import play.filters.csrf.CSRF.Token
         @helper.CSRF.formField
         @helper.inputText(form("title"))
         @helper.CSRF.formField
-        @helper.inputText(form("content"))
+        @helper.textarea(form("content"),
+        'rows -> 8, 'cols -> 40,
+        '_label -> "content" ,'_showConstraints -> false
+        )
+
         @helper.CSRF.formField
-        @helper.inputText(form("category"))
+        @helper.inputRadioGroup(
+        form("status"),
+        options = helper.options(("TODO", "TODO"),("進行中", "進行中"), ("完了","完了"))
+        )
+        @helper.inputRadioGroup(
+            form("category"),
+            options = helper.options(("研究", "研究"),("勉強", "勉強"), ("生活","生活"),("その他","その他"))
+        )
+
+
+
         <input type="submit" value="更新">
     }
 }
