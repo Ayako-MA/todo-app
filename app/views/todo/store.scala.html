@@ -1,0 +1,38 @@
+@import model.ToDo
+@import controllers.todo.TodoFormData
+@(form: Form[TodoFormData])(implicit messagesProvider: MessagesProvider, requestHeader: RequestHeader)
+import play.api.mvc._
+import play.api.mvc.Results._
+import play.filters.csrf._
+import play.filters.csrf.CSRF.Token
+
+@* CSRFトークンの生成ヘルパーで、requestHeade暗黙パラメートして渡しています。 *@
+
+@common.Default(model.ViewValueHome(
+    title = "Todo登録画面",
+    cssSrc = Seq("main.css"),
+    jsSrc = Seq("main.js")
+)){
+    <h1>登録画面です</h1>
+    @helper.form(action = controllers.todo.routes.TodoController.store) {
+        @helper.CSRF.formField
+        @helper.inputText(form("title"))
+        @helper.CSRF.formField
+        @helper.textarea(form("content"),
+        'rows -> 8, 'cols -> 40,
+        '_label -> "content" ,'_showConstraints -> false
+        )
+<a>status: TODO</a>
+
+
+        @helper.CSRF.formField
+        @helper.inputRadioGroup(
+            form("category"),
+            options = helper.options(("研究", "研究"),("勉強", "勉強"), ("生活","生活"),("その他","その他"))
+        )
+
+
+        <input type="submit" value="登録">
+    }
+}
+

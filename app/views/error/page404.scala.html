@@ -1,0 +1,13 @@
+@import model.ToDo
+@import controllers.todo.TodoFormData
+@*id and form*@
+@()
+
+@common.Default(model.ViewValueHome(
+    title = "ERROR",
+    cssSrc = Seq("main.css"),
+    jsSrc = Seq("main.js")
+)){
+    <h1>ページが見つかりません</h1>
+}
+

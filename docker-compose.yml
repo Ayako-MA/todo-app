@@ -5,10 +5,25 @@
 version: '3'
 
 services:
+  play-scala:
+    image: hseeberger/scala-sbt:8u242_1.3.8_2.13.1
+    container_name: playscala_todo
+    ports:
+      - "9000:9000"
+    volumes:
+      - .:/source
+      - ./.ivy2:/root/.ivy2
+      - ./.sbt:/root/.sbt
+      - ./.cache:/root/.cache
+    working_dir: /source
+    tty: true
+    networks:
+      - app-net
+
   # MySQL
   db:
     image: mysql:5.7
-    container_name: to_do_sample_container
+    container_name: todo_container
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE:      to_do
@@ -22,3 +37,9 @@ services:
     - ./docker/db/sql:/docker-entrypoint-initdb.d
     ports:
       - 33306:3306
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    driver: bridge
